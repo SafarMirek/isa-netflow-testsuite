@@ -1,2 +1,9 @@
-# isa-netflow-testsuite
-Test suite for FIT ISA project NetFlow Exporter
+# ISA NetFlow Test Suite
+Autor: Miroslav Šafář
+
+## Instalace
+
+## Použití
+```
+python3 flow.py -f <pcap_file> -a 60 -i 10
+```
