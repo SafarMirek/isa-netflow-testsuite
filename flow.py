@@ -10,7 +10,11 @@ packet_list = []
 flows = []
 
 def process_packet(packet: scapy.Packet):
-    packet_list.append(packet)
+    if scapy.TCP in packet or scapy.UDP in packet or scapy.ICMP in packet:
+        packet_list.append(packet)
+    else:
+        print("How? Packet:")
+        print(packet.show())
 
 def create_flows_from_packets(packets):
     global flows
@@ -23,7 +27,7 @@ def create_flows_from_packets(packets):
         else:
             flows.append(flow)
             flow = [packet]
-        if (scapy.TCP in packet and packet[scapy.TCP].flags & 1) or (scapy.TCP in packet and packet[scapy.TCP].flags & (1 << 2)):
+        if (scapy.TCP in packet and packet[scapy.TCP].flags & 1) > 0 or (scapy.TCP in packet and packet[scapy.TCP].flags & (1 << 2)) > 0:
             flows.append(flow)
             flow = []
 
@@ -58,7 +62,7 @@ args = parser.parse_args()
 active = args.active
 inactive = args.inactive
 
-scapy.sniff(offline=args.file, prn=process_packet,store=0)
+scapy.sniff(offline=args.file, filter="icmp or udp or tcp", prn=process_packet,store=0)
 
 flow_key = lambda packet: (
     packet[scapy.IP].src, 
